@@ -10,7 +10,7 @@ def banner():
     print(r" /   | \__, //_____// __/  / /_/ /  / /_ / /_/  __// /    ")
     print(r"/_/|_|/____/       /_/     \__,_/  /___//___/\___//_/     ")
     print()
-    print("                        Developed by MrCySec    ")
+    print("                        Developed by @AliHz1337    ")
     print()
     print()
 

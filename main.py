@@ -115,7 +115,7 @@ def generate_all(links, values, parameters_file, value_strategy, chunk_size):
 
 # Main function to parse arguments and execute the script
 def main():
-    parser = argparse.ArgumentParser(description="URL Fuzzing Tool. Developed By MrCySec. https://x.com/mrcysec")
+    parser = argparse.ArgumentParser(description="URL Fuzzing Tool. Developed By Ali-Hz. https://x.com/AliHz1337")
     parser.add_argument('-u', '--url', help="Single URL")
     parser.add_argument('-l', '--url_list', help="File with links (not used with -u)")
     parser.add_argument('-gs', '--generate_strategy', required=True, choices=['ignore', 'combine', 'normal', 'all'], help="Generate strategy")

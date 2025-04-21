@@ -1,1 +1,1 @@
-# No external dependencies for this project
+python>=3.6

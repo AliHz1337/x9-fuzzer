@@ -1,97 +1,120 @@
-# x9-Fuzzer
+# X9-Fuzzer
 
-<p align="center">
-  <a href="#requirements">Requirements</a> •
-  <a href="#installation">Installation</a> •
-  <a href="#tool-options">Tool options</a> •
-  <a href="#usage">Usage</a> •
-  <a href="#license">license</a>
-</p>
 
-URL Fuzzing Tool. Developed By MrCySec. https://x.com/mrcysec
+## Overview
 
-## Requirements
-- Python3
+X9-Fuzzer is a powerful and flexible URL fuzzing tool for bug bounty hunters and security researchers. It enables efficient parameter fuzzing with various strategies to help discover potential vulnerabilities in web applications.
+
+## Features
+
+- **Multiple Fuzzing Strategies**: Support for normal, combine, ignore, and all-in-one fuzzing approaches
+- **Flexible Value Handling**: Replace or append values to existing parameters
+- **Efficient Processing**: Chunk processing to handle large parameter sets
+- **Input Flexibility**: Accept single URLs or lists from files
+- **Robust Error Handling**: Comprehensive validation and error reporting
+- **Performance Optimized**: Generator-based processing for memory efficiency
 
 ## Installation
-  1. `git clone https://github.com/imMrCySec/x9-fuzzer.git`
-  2. `cd x9-fuzzer`
-  2. `chmod +x main.py`
-  4. `python3 main.py -h`
-  
-## Note
-- You can also add path of the tool to your bash or zsh profile to run it everywhere by add the flowing line in `.profile`
-- `alias x9="python3 ~/x9-fuzzer/main.py"`
-- Now you can run tool in every directory
-- `x9 -h`
 
+```bash
+# Clone the repository
+git clone https://github.com/AliHz1337/x9-fuzzer.git
 
-## Tool Options
-- `-u` or `--url` : Single URL to edit
-- `-l` or `--url_list` : File with links (not used with -u)
-- `-p` or `--parameters` : File with parameters (required for 'ignore', 'normal', and 'all' strategies)
-- `-c` or `--chunk` : Number of parameters per URL (default: 25)
-- `-v` or `--values_inline` : Values provided inline
-- `-vf` or `--values_file` : File with values (ignored if -vf is provided)
-- `-gs` or `--generate_strategy` : Select the mode strategy from the available choice, choices=['ignore', 'combine', 'normal', 'all']
-	`normal` : Remove all parameters and put the wordlist
-	`combine` : Pitchfork combine on the existing parameters
-	`ignore` : Don't touch the URL and put the wordlist
-	`all` : All in one method
-- `-vs` or `--value_strategy` : Value strategy (required for 'combine'), choices=['replace', 'suffix']
-	`replace` : Replace the value with gathered value
-	`suffix` : Append the value to the end of the parameters
-- `-o` or `--output` : File to save the output (default: x9-generated-link.txt)
-- `-s` or `--silent` : Silent mode
-- `-h` or `--help` : Display help message
+# Navigate to the directory
+cd x9-fuzzer
+
+# Make the script executable
+chmod +x main.py
+```
 
 ## Usage
 
-Single URL :
 ```
-python3 main.py -u "https://domain.tld/?param1=value1&param2=value2" -gs all -vs suffix -v '"MAMAD"' -p param.txt -c 20
-
-Output:
-
-https://domain.tld/?param1=value1%22MAMAD%22&param2=value2
-https://domain.tld/?param1=value1&param2=value2%22MAMAD%22
-https://domain.tld/?param1=value1&param2=value2&hidden_param1=%22MAMAD%22&hidden_param2=%22MAMAD%22
-https://domain.tld/?hidden_param1=%22MAMAD%22&hidden_param2=%22MAMAD%22
-
+usage: main.py [-h] (-u URL | -l URL_LIST) -gs {all,combine,normal,ignore}
+             [-vs {replace,suffix}] (-v VALUES_INLINE [VALUES_INLINE ...] | -vf VALUES_FILE)
+             [-p PARAMETERS] [-c CHUNK] [-o [OUTPUT]] [-s]
 ```
 
-List of URLs :
-```
-python3 main.py -l urls.txt -gs all -vs suffix -v '"MAMAD"' -p param.txt -c 20
+### Arguments
 
-Output:
+| Argument | Description |
+|----------|-------------|
+| `-u, --url` | Single URL to fuzz |
+| `-l, --url_list` | File containing multiple URLs |
+| `-gs, --generate_strategy` | Fuzzing strategy: all, combine, normal, or ignore |
+| `-vs, --value_strategy` | Value handling: replace or suffix (required for 'all' and 'combine') |
+| `-v, --values_inline` | Specify values directly in command line |
+| `-vf, --values_file` | File containing values to use |
+| `-p, --parameters` | File with parameters (required for 'ignore', 'normal', and 'all') |
+| `-c, --chunk` | Number of parameters per URL (default: 25) |
+| `-o, --output` | File to save generated URLs (default: x9-generated-link.txt) |
+| `-s, --silent` | Suppress banner display |
 
-https://domain.tld/?param1=value1%22MAMAD%22&param2=value2
-https://domain.tld/?param1=value1&param2=value2%22MAMAD%22
-https://domain.tld/?param1=value1&param2=value2&hidden_param1=%22MAMAD%22&hidden_param2=%22MAMAD%22
-https://domain.tld/?hidden_param1=%22MAMAD%22&hidden_param2=%22MAMAD%22
+## Fuzzing Strategies
 
-```
+### 1. Normal Strategy
+Adds specified parameters with values to the URL, regardless of existing parameters.
 
-Multiple value as payload
-```
-python3 main.py -u "https://domain.tld/?param1=value1&param2=value2" -gs all -vs suffix -v '"MAMAD"'  "'MAMAD'"  '<b/MAMAD' -p param.txt -c 20
-```
-
-List of values as payload
-```
-python3 main.py -u "https://domain.tld/?param1=value1&param2=value2" -gs all -vs suffix -vf value.txt -p param.txt -c 20
-```
-
-Run the tool in silent mode
-```
-python3 main.py -u "https://domain.tld/?param1=value1&param2=value2" -gs all -vs suffix -v '"MAMAD"'  "'MAMAD'"  '<b/MAMAD' -p param.txt -c 20 -s
+```bash
+python3 main.py -u "https://example.com" -gs normal -v test -p parameters.txt
 ```
 
-Write output to a file
+### 2. Combine Strategy
+Modifies existing parameters in the URL with the provided values.
+
+```bash
+python3 main.py -u "https://example.com?param=value" -gs combine -vs replace -v test
 ```
-python3 main.py -u "https://domain.tld/?param1=value1&param2=value2" -gs all -vs suffix -v '"MAMAD"'  "'MAMAD'"  '<b/MAMAD' -p param.txt -c 20 -o output.txt
+
+### 3. Ignore Strategy
+Adds specified parameters only if they don't already exist in the URL.
+
+```bash
+python3 main.py -u "https://example.com?param=value" -gs ignore -v test -p parameters.txt
 ```
+
+### 4. All Strategy
+Combines all three strategies above for comprehensive fuzzing.
+
+```bash
+python3 main.py -u "https://example.com?param=value" -gs all -vs suffix -v test -p parameters.txt
+```
+
+## Examples
+
+### Basic Usage
+```bash
+# Fuzz a single URL with inline values
+python3 main.py -u "https://example.com" -gs normal -v payload1 payload2 -p params.txt
+
+# Fuzz multiple URLs from a file
+python3 main.py -l urls.txt -gs combine -vs replace -v xss -o results.txt
+```
+
+### Advanced Usage
+```bash
+# Combine multiple strategies with various payloads
+python3 main.py -l urls.txt -gs all -vs suffix -vf payloads.txt -p params.txt -c 50
+
+# Silent mode with output to file
+python3 main.py -u "https://example.com" -gs normal -vf payloads.txt -p params.txt -s -o
+```
+
+## Pipeline Integration
+X9-Fuzzer supports piping outputs to other tools:
+
+```bash
+python3 main.py -l urls.txt -gs normal -v xss -p params.txt | httpx -silent | nuclei -t xss.yaml
+```
+
+## Contributing
+
+Contributions are welcome! Feel free to submit issues or pull requests.
 
 ## License
-This project is licensed under the MIT license. See the LICENSE file for details.
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
+
+If you find X9-Fuzzer useful, please consider giving it a star on GitHub!
